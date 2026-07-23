@@ -1,2 +1,18 @@
-# distributed-key-value-store
-Built a distributed in-memory key-value storage system in C++ with thread-safe operations, hash-based data partitioning, multi-file data loading, and per-node statistics.
+﻿# KVStore
+
+A simple in-memory key-value store implemented in C++.
+
+## Project layout
+
+- `src/InMemoryKVstore.cpp` contains the concrete `InMemoryKVStore` implementation.
+- `include/kvstore.h` defines the abstract `KVStore` interface.
+- `KVStore/CMakeLists.txt` builds the project from the repository root.
+
+## Build
+
+From the `KVStore` directory:
+
+```bash
+cmake -S . -B build
+cmake --build build
+```
