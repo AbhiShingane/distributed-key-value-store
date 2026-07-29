@@ -103,110 +103,20 @@ int main() {
             << "Some records failed to load.\n";
     }
 
-    /*auto record = cluster->get("EMP001");
+    std::cout<< "\n========== Processing Network ==========\n";
 
-    if(record.has_value())
-    {
-        std::cout
-            << "record present"
-            << std::endl;
-    }
-    else
-    {
-        std::cout
-            << "Record not found.\n";
-    }*/
-    //----------------------------------------------------------
-        // Cluster Statistics
-        //----------------------------------------------------------
+    cluster->processNetwork();
 
-    /*    std::cout
-            << "\n========== Cluster Statistics ==========\n";
-
-        cluster->printStatistics();
-
-        //----------------------------------------------------------
-        // GET Test
-        //----------------------------------------------------------
-
-        std::cout
-            << "\n========== GET ==========\n";
-
-        auto record = cluster->get("EMP001");
-
-        if(record.has_value())
-        {
-            std::cout
-                << record->toString()
-                << std::endl;
-        }
-        else
-        {
-            std::cout
-                << "Record not found.\n";
-        }
-
-        //----------------------------------------------------------
-        // PUT Test
-        //----------------------------------------------------------
-
-        std::cout
-            << "\n========== PUT ==========\n";
-
-        Record employee;
-
-        employee.setKey("EMP100");
-
-        employee.addValue("28");
-
-        employee.addValue("91");
-
-        cluster->put(employee);
-
-        std::cout
-            << "Inserted EMP100\n";
-
-        //----------------------------------------------------------
-        // GET Again
-        //----------------------------------------------------------
-
-        auto inserted = cluster->get("EMP100");
-
-        if(inserted.has_value())
-        {
-            std::cout
-                << inserted->toString()
-                << std::endl;
-        }
-
-        //----------------------------------------------------------
-        // DELETE Test
-        //----------------------------------------------------------
-
-        std::cout
-            << "\n========== DELETE ==========\n";
-
-        if(cluster->erase("EMP100"))
-        {
-            std::cout
-                << "EMP100 deleted successfully.\n";
-        }
-
-        //----------------------------------------------------------
-        // Verify Delete
-        //----------------------------------------------------------
-
-        auto deleted = cluster->get("EMP100");
-
-        if(!deleted.has_value())
-        {
-            std::cout
-                << "Verified deletion.\n";
-        }*/
-
-    std::cout << "\n========== Final Statistics ==========\n\n";
+    //--------------------------------------------------------
+    // Print Cluster Statistics
+    //--------------------------------------------------------
+    std::cout<< "\n========== Cluster Statistics ==========\n";
 
     cluster->printStatistics();
+
+    /*std::cout << "\n========== Final Statistics ==========\n\n";
+
+    cluster->printStatistics();*/
 
     return 0;
 }

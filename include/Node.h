@@ -4,6 +4,7 @@
 #include "Statistics.h"
 #include <optional>
 #include "Record.h"
+
 class Node
 {
     private:

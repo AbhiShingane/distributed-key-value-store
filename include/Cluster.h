@@ -17,8 +17,8 @@ class Cluster
         Partitioner partitioner;
 
         
-        Node& getOwnerNode(const std::string& key);
-        const Node& getOwnerNode(const std::string& key) const;
+        //Node& getOwnerNode(const std::string& key);
+        //const Node& getOwnerNode(const std::string& key) const;
         
         
     public:
@@ -40,6 +40,8 @@ class Cluster
          bool erase(const std::string& key);
 
          bool contains(const std::string& key) const;
+
+         void processNetwork();
 
          size_t numberOfNodes() const;
 

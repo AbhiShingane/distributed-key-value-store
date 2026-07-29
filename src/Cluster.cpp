@@ -2,6 +2,8 @@
 #include<stdexcept>
 #include"Cluster.h"
 
+#include "NetworkMock.h"
+#include "Serializer.h"
 
 Cluster::Cluster(size_t numNodes) : partitioner(numNodes) 
 {
@@ -23,33 +25,61 @@ Cluster::Cluster(size_t numNodes) : partitioner(numNodes)
 
 bool Cluster::put(const Record& record)
 {
-    Node &ownerNode = getOwnerNode(record.getKey());
+    //Node &ownerNode = getOwnerNode(record.getKey());
     //std::cout<<"data sending for put: nodeid=  "<<ownerNode.id()<<std::endl;
-    return ownerNode.put(record);
+    //return ownerNode.put(record);
+
+    size_t ownerNode =
+        partitioner.getNodeIndex(record.getKey());
+
+    std::vector<uint8_t> packet =
+        Serializer::serialize(record);
+
+    NetworkMock::send(
+        static_cast<int>(ownerNode),
+        packet);
+        
+    return true;
+    
 }
 
 
 std::optional<Record> Cluster::get(const std::string& key) const
 {
-    const Node &ownerNode = getOwnerNode(key);
+    /*const Node &ownerNode = getOwnerNode(key);
 
-    return ownerNode.get(key);
+    return ownerNode.get(key);*/
+    size_t ownerNode =
+        partitioner.getNodeIndex(key);
+    
+    return nodes[ownerNode]->get(key);    
+
 }
 
 
 bool Cluster::erase(const std::string& key)
 {
-    Node &ownerNode = getOwnerNode(key);
+    /*Node &ownerNode = getOwnerNode(key);
 
-    return ownerNode.erase(key);
+    return ownerNode.erase(key);*/
+
+    size_t ownerNode =
+        partitioner.getNodeIndex(key);
+    
+    return nodes[ownerNode]->erase(key);   
 }
 
 
 bool Cluster::contains(const std::string& key) const
 {
-    const Node &ownerNode = getOwnerNode(key);
+    /*const Node &ownerNode = getOwnerNode(key);
 
-    return ownerNode.contains(key);
+    return ownerNode.contains(key);*/
+
+    size_t ownerNode =
+        partitioner.getNodeIndex(key);
+    
+    return nodes[ownerNode]->contains(key);
 }
 
 size_t Cluster::numberOfNodes() const
@@ -57,17 +87,17 @@ size_t Cluster::numberOfNodes() const
     return nodes.size();
 }
 
-Node& Cluster::getOwnerNode(const std::string& key)
+/*Node& Cluster::getOwnerNode(const std::string& key)
 {
     size_t nodeIndex = partitioner.getNodeIndex(key);
     return *(nodes[nodeIndex]);
-}
+}*/
 
-const Node& Cluster::getOwnerNode(const std::string& key) const
+/*const Node& Cluster::getOwnerNode(const std::string& key) const
 {
     size_t nodeIndex = partitioner.getNodeIndex(key);
     return *(nodes[nodeIndex]);
-}
+}*/
 
 
 void Cluster::printStatistics() const
@@ -86,4 +116,28 @@ void Cluster::printStatistics() const
     std::cout << "Total Nodes   : " << nodes.size() << '\n';
     std::cout << "Total Records : " << totalRecords << '\n';
     std::cout << "========================================\n";
+}
+
+void Cluster::processNetwork()
+{
+    std::vector<uint8_t> packet;
+    
+    try
+    {
+        for(auto& node: nodes)
+        {
+            while(NetworkMock::receive(node->id(), packet))
+            {
+                Record record = Serializer::deserialize(packet);
+
+                node->put(record);
+            }
+        }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    return;
 }

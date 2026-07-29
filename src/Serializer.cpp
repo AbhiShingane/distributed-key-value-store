@@ -5,7 +5,7 @@
 #include<string>
 
 
-static std::vector<uint8_t> serialize(const Record& record)
+std::vector<uint8_t> Serializer::serialize(const Record& record)
 {
     std::ostringstream stream;
 
@@ -26,7 +26,7 @@ static std::vector<uint8_t> serialize(const Record& record)
 }
 
         
-static Record deserialize(const std::vector<uint8_t>& buffer)
+Record Serializer::deserialize(const std::vector<uint8_t>& buffer)
 {
     try
     {
