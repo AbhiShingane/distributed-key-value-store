@@ -2,11 +2,12 @@
 #include <stdexcept>
 #include <iostream>
 
-bool InMemoryKVStore::set(const std::string& key, const std::string& value) {
+bool InMemoryKVStore::set(const Record& record) {
     bool success = false;
     std::unique_lock<std::shared_mutex> lock(mutex_);
     try {
-        store_[key] = value;
+        store_[record.getKey()] = record;
+        std::cout<<"record added: "<<record.getKey()<<std::endl;
         success = true;
     } catch (const std::bad_alloc&) {
         success = false;
@@ -17,13 +18,14 @@ bool InMemoryKVStore::set(const std::string& key, const std::string& value) {
     
 }
 
-std::string InMemoryKVStore::get(const std::string& key) const {
+std::optional<Record> InMemoryKVStore::get(const std::string& key) const{
     std::shared_lock<std::shared_mutex> lock(mutex_);
     auto it = store_.find(key);
     if (it != store_.end()) {
         return it->second;
     }
-    throw std::runtime_error("Key not found");
+
+    
 }
 
 bool InMemoryKVStore::del(const std::string& key) {

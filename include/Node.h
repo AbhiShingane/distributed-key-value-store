@@ -3,7 +3,7 @@
 #include "InMemoryKVstore.h"
 #include "Statistics.h"
 #include <optional>
-
+#include "Record.h"
 class Node
 {
     private:
@@ -22,9 +22,9 @@ class Node
 
         ~Node() = default;
 
-        bool put(const std::string& key, const std::string& value);
+        bool put(const Record& record);
 
-        std::optional<std::string> get(const std::string& key) const;
+        std::optional<Record> get(const std::string& key) const;
 
         bool erase(const std::string& key);
 

@@ -4,8 +4,14 @@
 #include<unordered_map>
 #include<algorithm>
 #include<string>
-#include"Datatype.h"
+#include<vector>
+#include "Datatype.h"
 
+struct FieldDefinition
+{
+    std::string name;
+    DataType type;
+};
 
 class SchemaConfig
 {
@@ -13,9 +19,9 @@ class SchemaConfig
     SchemaConfig() = default;
     ~SchemaConfig() = default;
 
-    bool addField(const std::string& fieldName, Datatype datatype);
+    bool addField(const std::string& fieldName, DataType datatype);
 
-    Datatype getType(const std::string& fieldName) const;
+    DataType getType(const std::string& fieldName) const;
 
     bool validate(const std::string& fieldName, const std::string& value) const;
 
@@ -25,6 +31,12 @@ class SchemaConfig
 
     bool contains(const std::string& fieldName) const;
 
+    bool validateRecord(const std::vector<std::string>& val) const;
+
+    const std::vector<FieldDefinition>& getFields() const;
+
+
     private:
-    unorderd_map<std::string, Datatype> schema;
+    std::unordered_map<std::string, DataType> schema;
+    std::vector<FieldDefinition> fields;
 };

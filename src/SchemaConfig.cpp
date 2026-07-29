@@ -1,17 +1,21 @@
 #include "SchemaConfig.h"
 #include <stdexcept>
 
-bool SchemaConfig::addField(const std::string& fieldName, Datatype datatype)
+bool SchemaConfig::addField(const std::string& fieldName, DataType datatype)
 {
     if(schema.find(fieldName) != schema.end())
     {
         return false;
     }
 
-    return schema.emplace(fieldName, datatype).second;
+    schema[fieldName] = datatype;
+
+    fields.push_back({fieldName, datatype});
+
+    return true;
 }
 
-Datatype SchemaConfig::getType(const std::string& fieldName) const
+DataType SchemaConfig::getType(const std::string& fieldName) const
 {
     try
     {
@@ -29,7 +33,7 @@ Datatype SchemaConfig::getType(const std::string& fieldName) const
         throw std::invalid_argument("Field name not found in schema: " + fieldName);
     }
 
-    return it->second;
+    //return it->second;
 }
 
 bool SchemaConfig::contains(const std::string& fieldName) const
@@ -49,7 +53,7 @@ bool SchemaConfig::validate(const std::string& fieldName, const std::string& val
             throw std::invalid_argument("Field name not found in schema: " + fieldName);
         }
 
-        return DatatypeUtils::validate(value, itr->second);
+        return DataTypeUtils::validate(itr->second, value);
 
     }
     catch(const std::exception& e)
@@ -58,16 +62,50 @@ bool SchemaConfig::validate(const std::string& fieldName, const std::string& val
     }
 }
 
+
+bool SchemaConfig::validateRecord(
+        const std::vector<std::string>& values) const
+{
+    if(values.size() != fields.size())
+    {
+        throw std::runtime_error(
+            "Expected " +
+            std::to_string(fields.size()) +
+            " fields but received " +
+            std::to_string(values.size()));
+    }
+
+    for(size_t i = 0; i < fields.size(); ++i)
+    {
+        if(!DataTypeUtils::validate(fields[i].type,
+                                    values[i]))
+        {
+            throw std::runtime_error(
+                "Invalid value '" +
+                values[i] +
+                "' for field '" +
+                fields[i].name + "'");
+        }
+    }
+
+    return true;
+}
+
+const std::vector<FieldDefinition>& SchemaConfig::getFields() const
+{
+    return fields;
+}
+
 void SchemaConfig::printSchema() const
 {
     std::cout << "\n================Schema==============\n" << std::endl;
     for (const auto& field : schema) {
         std::cout << "Field Name: " << field.first << ", Datatype: ";
         switch (field.second) {
-            case Datatype::String:
+            case DataType::String:
                 std::cout << "String";
                 break;
-            case Datatype::int32:
+            case DataType::Int32:
                 std::cout << "int32";
                 break;
             default:
@@ -82,5 +120,5 @@ void SchemaConfig::printSchema() const
 
 size_t SchemaConfig::size() const
 {
-    return schema.size();
+    return fields.size();
 }

@@ -4,26 +4,12 @@
 #include "loader.h"
 #include "Cluster.h"
 
+#include "ConfigParser.h"
+#include "SchemaConfig.h"
+
 using namespace std;
 
 int main() {
-    
-    ConfigParser parser;
-
-    parser.parse("../config/config.txt");
-    
-    std::cout << "Nodes : "
-                  << parser.getNumberOfNodes()
-                  << std::endl;
-                  
-    Cluster cluster(parser.getNumberOfNodes());
-
-    Loader loader(cluster, parser.getSchemaConfig());
-
-    parser.getSchemaConfig().printSchema();
-
-
-
     /*std::cout << "========== Direct Record Loading ==========\n";
 
     loader.load("Apple", "Fruit");
@@ -66,6 +52,35 @@ int main() {
 
     cluster.printStatistics();*/
 
+    //----------------------------------------------------------
+    // Parse Configuration
+    //----------------------------------------------------------
+        ConfigParser configParser;
+
+        configParser.parse("../config.txt");
+
+        std::cout << "\n========== Configuration ==========\n";
+
+        std::cout << "Nodes : "
+                  << configParser.getNumberOfNodes()
+                  << std::endl;
+
+        configParser.getSchemaConfig().printSchema();
+
+    //----------------------------------------------------------
+    // Create Cluster
+    //----------------------------------------------------------
+
+        auto cluster = std::make_shared<Cluster>(
+            configParser.getNumberOfNodes());
+
+    //----------------------------------------------------------
+    // Create Loader
+    //----------------------------------------------------------
+
+        Loader loader(
+            *cluster,
+            configParser.getSchemaConfig());
     
     std::cout << "\n========== Load From Multiple Files ==========\n";
 
@@ -77,25 +92,121 @@ int main() {
         "../data/node4.csv"
     };
 
-    loader.loadFromFile(files);
+    if(loader.loadFromFile(files))
+    {
+        std::cout
+            << "All records loaded successfully.\n";
+    }
+    else
+    {
+        std::cout
+            << "Some records failed to load.\n";
+    }
 
-    std::cout << "\n========== Verify Records Loaded From Files ==========\n";
+    /*auto record = cluster->get("EMP001");
 
-    auto value = cluster.get("india");
-    if (value)
-        std::cout << "india -> " << *value << std::endl;
+    if(record.has_value())
+    {
+        std::cout
+            << "record present"
+            << std::endl;
+    }
+    else
+    {
+        std::cout
+            << "Record not found.\n";
+    }*/
+    //----------------------------------------------------------
+        // Cluster Statistics
+        //----------------------------------------------------------
 
-    value = cluster.get("banana");
-    if (value)
-        std::cout << "banana -> " << *value << std::endl;
+    /*    std::cout
+            << "\n========== Cluster Statistics ==========\n";
 
-    value = cluster.get("cpp");
-    if (value)
-        std::cout << "cpp -> " << *value << std::endl;
+        cluster->printStatistics();
 
-    std::cout << "\n========== Final Statistics ==========\n\n";
+        //----------------------------------------------------------
+        // GET Test
+        //----------------------------------------------------------
 
-    cluster.printStatistics();
+        std::cout
+            << "\n========== GET ==========\n";
+
+        auto record = cluster->get("EMP001");
+
+        if(record.has_value())
+        {
+            std::cout
+                << record->toString()
+                << std::endl;
+        }
+        else
+        {
+            std::cout
+                << "Record not found.\n";
+        }
+
+        //----------------------------------------------------------
+        // PUT Test
+        //----------------------------------------------------------
+
+        std::cout
+            << "\n========== PUT ==========\n";
+
+        Record employee;
+
+        employee.setKey("EMP100");
+
+        employee.addValue("28");
+
+        employee.addValue("91");
+
+        cluster->put(employee);
+
+        std::cout
+            << "Inserted EMP100\n";
+
+        //----------------------------------------------------------
+        // GET Again
+        //----------------------------------------------------------
+
+        auto inserted = cluster->get("EMP100");
+
+        if(inserted.has_value())
+        {
+            std::cout
+                << inserted->toString()
+                << std::endl;
+        }
+
+        //----------------------------------------------------------
+        // DELETE Test
+        //----------------------------------------------------------
+
+        std::cout
+            << "\n========== DELETE ==========\n";
+
+        if(cluster->erase("EMP100"))
+        {
+            std::cout
+                << "EMP100 deleted successfully.\n";
+        }
+
+        //----------------------------------------------------------
+        // Verify Delete
+        //----------------------------------------------------------
+
+        auto deleted = cluster->get("EMP100");
+
+        if(!deleted.has_value())
+        {
+            std::cout
+                << "Verified deletion.\n";
+        }*/
+
+    //std::cout << "\n========== Final Statistics ==========\n\n";
+
+    //cluster->printStatistics();
 
     return 0;
 }

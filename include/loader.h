@@ -3,17 +3,20 @@
 #include"Record.h"
 #include<vector>
 
+#include "SchemaConfig.h"
+
 class Cluster;
 
 class Loader
 {
     private:
         Cluster& clusterobj;
-    
+        const SchemaConfig& schemaConfig;
         bool processline(const std::string& line);
-
+        Record parseRecord(const std::string& line);
+        
     public:
-        explicit Loader(Cluster& cluster, const SchemaConfig& schemaConfig);
+        explicit Loader(Cluster& cluster, const SchemaConfig& schconfig);
 
 
         Loader(const Loader& other) = delete; // Delete copy constructor
@@ -25,7 +28,7 @@ class Loader
 
         ~Loader() = default;
 
-       bool load(const std::string& key, const std::string& value);
+       bool load(const Record& record);
 
        bool loadFromFile(const std::vector<std::string>& fileNames);
 };

@@ -4,22 +4,24 @@
 
 Node::Node(int id) : nodeId(id) {}
 
-bool Node::put(const std::string& key, const std::string& value) {
+bool Node::put(const Record& record) {
     stats.recordPut();
-    return kvStore.set(key, value);
+    std::cout << "In Node Puts: " << stats.getPuts() << std::endl;
+    return kvStore.set(record);
 }
 
 
-std::optional<std::string> Node::get(const std::string& key) const {
-    std::optional<std::string> value;
-    stats.recordGet();
+std::optional<Record> Node::get(const std::string& key) const {
+    std::optional<Record> records;
+    
     try {
-        value = kvStore.get(key);
+        stats.recordGet();
+        records = kvStore.get(key);
     } catch (const std::runtime_error&) {
         //return std::nullopt;
     }
 
-    return value;
+    return records;
 }
 
 
