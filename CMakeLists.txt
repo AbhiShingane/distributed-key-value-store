@@ -16,6 +16,8 @@ add_library(kvstore STATIC
             include/Datatype.h
             src/SchemaConfig.cpp
             src/ConfigParser.cpp
+            src/Serializer.cpp
+            src/NetworkMock.cpp
 )
 
 target_include_directories(kvstore PUBLIC include)

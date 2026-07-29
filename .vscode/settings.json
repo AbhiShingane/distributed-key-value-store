@@ -1,0 +1,7 @@
+{
+  "editor.wordWrap": "on",
+  "chat.agent.enabled": true,
+  "chat.agent.maxRequests": 25,
+  "github.copilot.chat.agent.autoFix": true,
+  "chat.useAgentSkills": true
+}
