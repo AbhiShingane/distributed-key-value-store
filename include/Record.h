@@ -4,6 +4,8 @@
 #include<sstream>
 #include<string>
 
+#include "Datatype.h"
+
 class Record {
 private:
     std::string key;

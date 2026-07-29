@@ -204,9 +204,9 @@ int main() {
                 << "Verified deletion.\n";
         }*/
 
-    //std::cout << "\n========== Final Statistics ==========\n\n";
+    std::cout << "\n========== Final Statistics ==========\n\n";
 
-    //cluster->printStatistics();
+    cluster->printStatistics();
 
     return 0;
 }

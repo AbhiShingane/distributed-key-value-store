@@ -6,7 +6,7 @@ Node::Node(int id) : nodeId(id) {}
 
 bool Node::put(const Record& record) {
     stats.recordPut();
-    std::cout << "In Node Puts: " << stats.getPuts() << std::endl;
+    //std::cout << "In Node Puts: " << stats.getPuts() << std::endl;
     return kvStore.set(record);
 }
 

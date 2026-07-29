@@ -1,5 +1,5 @@
 # Cluster Configuration
-nodes=4
+nodes=5
 
 # Schema Definitions (Supported types: string, int32)
 field=id,string

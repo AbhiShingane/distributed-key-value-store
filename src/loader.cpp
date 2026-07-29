@@ -17,7 +17,7 @@ Loader::Loader(Cluster& cluster, const SchemaConfig& schconfig) : clusterobj(clu
 bool Loader::load(const Record& record) {
 
     clusterobj.put(record);
-    std::cout<<"In load function: "<<record.getKey()<<"  is added."<<std::endl;
+    //std::cout<<"In load function: "<<record.getKey()<<"  is added."<<std::endl;
     return true;
 }
 
@@ -31,7 +31,7 @@ bool Loader::loadFromFile(const std::vector<std::string>& fileNames)
     {
         for (const auto& fileName : fileNames) 
         {
-            std::cout<<"filename: "<<fileName<<std::endl; 
+            //std::cout<<"filename: "<<fileName<<std::endl; 
             std::fstream file(fileName);
             if (!file.is_open()) {
                 std::cerr << "Error: Could not open file " << fileName << std::endl;
@@ -42,7 +42,7 @@ bool Loader::loadFromFile(const std::vector<std::string>& fileNames)
             std::string line;
             while (std::getline(file, line)) {
 
-                if(!line.empty())
+                if(line.empty())
                 {
                     continue;
                 }
@@ -76,7 +76,7 @@ bool Loader::processline(const std::string& line) {
     try
     {
         Record record = parseRecord(line);
-        std::cout<<"Inside this Loader::processline() "<<std::endl;
+        //std::cout<<"Inside this Loader::processline() "<<std::endl;
         return load(record);
     }
     catch (const std::exception& ex)
@@ -96,10 +96,19 @@ Record Loader::parseRecord(const std::string& line)
 
     while (std::getline(ss, token, ','))
     {
-        columns.push_back(token);
+        columns.push_back(DataTypeUtils::trim(token));
     }
 
     const auto& fields = schemaConfig.getFields();
+
+    /*for(const auto& field : fields)
+    {
+        std::cout
+            << field.name
+            << " -> "
+            << DataTypeUtils::toString(field.type)
+            << '\n';
+    }*/
 
     if (columns.size() != fields.size())
     {
@@ -119,19 +128,44 @@ Record Loader::parseRecord(const std::string& line)
             "Primary key cannot be empty.");
     }
 
+
     record.setKey(columns[0]);
 
+    //std::cout << " \nIn Loader::parseRecord(const std::string& line) function Parsing Line : " << line << '\n';
+
+    /*for(size_t i=0;i<columns.size();++i)
+    {
+        std::cout << "Column[" << i << "] = ["
+                << columns[i] << "]\n";
+    }*/
     // Validate every field
     for (size_t i = 0; i < fields.size(); ++i)
     {
+        /*std::cout
+            << "Validating "
+            << fields[i].name
+            << " value=["
+            << columns[i]
+            << "]\n";*/
+        bool valid = 0;
         if (!DataTypeUtils::validate(fields[i].type,
                                      columns[i]))
         {
+            valid = 0;
             throw std::runtime_error(
                 "Invalid value '" +
                 columns[i] +
                 "' for field '" +
                 fields[i].name + "'");
+
+        }
+
+        if(valid)
+        {
+            std::cout
+            << "Result = "
+            << valid
+            << '\n';
         }
 
         // Skip key because it is already stored

@@ -24,7 +24,7 @@ Cluster::Cluster(size_t numNodes) : partitioner(numNodes)
 bool Cluster::put(const Record& record)
 {
     Node &ownerNode = getOwnerNode(record.getKey());
-    std::cout<<"data sending for put: nodeid=  "<<ownerNode.id()<<std::endl;
+    //std::cout<<"data sending for put: nodeid=  "<<ownerNode.id()<<std::endl;
     return ownerNode.put(record);
 }
 
