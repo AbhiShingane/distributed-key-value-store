@@ -13,6 +13,9 @@ add_library(kvstore STATIC
             src/Partitioner.cpp
             src/Cluster.cpp
             include/Record.h
+            include/Datatype.h
+            src/SchemaConfig.cpp
+            src/ConfigParser.cpp
 )
 
 target_include_directories(kvstore PUBLIC include)

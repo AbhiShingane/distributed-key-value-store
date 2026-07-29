@@ -13,7 +13,7 @@ class Loader
         bool processline(const std::string& line);
 
     public:
-        explicit Loader(Cluster& cluster);
+        explicit Loader(Cluster& cluster, const SchemaConfig& schemaConfig);
 
 
         Loader(const Loader& other) = delete; // Delete copy constructor

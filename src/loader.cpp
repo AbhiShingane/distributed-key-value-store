@@ -8,11 +8,25 @@
 #include<exception>
 #include <stdexcept>
 
-Loader::Loader(Cluster& cluster) : clusterobj(cluster) {}
+Loader::Loader(Cluster& cluster, const SchemaConfig& schemaConfig) : clusterobj(cluster), schemaConfig_(schemaConfig) {}
 
 
 // Load a single record into the cluster
 bool Loader::load(const std::string& key, const std::string& value) {
+
+    if (!schemaConfig_.contains(key))
+    {
+        throw std::runtime_error(
+            "Unknown schema field : " + key);
+    }
+
+    if (!schemaConfig_.validate(key, value))
+    {
+        throw std::runtime_error(
+            "Invalid value '" + value +
+            "' for field '" + value + "'");
+    }
+
     Record record(key, value);
     clusterobj.put(record);
     return true;
@@ -79,6 +93,19 @@ bool Loader::processline(const std::string& line) {
         return false;
     }
 
+    if (!schemaConfig_.contains(key))
+    {
+        throw std::runtime_error(
+            "Unknown schema field : " + key);
+    }
+
+    if (!schemaConfig_.validate(key, value))
+    {
+        throw std::runtime_error(
+            "Invalid value '" + value +
+            "' for field '" + value + "'");
+    }
+    
     Record record(key, value);
 
     clusterobj.put(record);

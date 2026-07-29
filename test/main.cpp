@@ -7,11 +7,22 @@
 using namespace std;
 
 int main() {
-    // Create a cluster with 4 nodes
-    Cluster cluster(5);
+    
+    ConfigParser parser;
 
-    // Create loader
-    Loader loader(cluster);
+    parser.parse("../config/config.txt");
+    
+    std::cout << "Nodes : "
+                  << parser.getNumberOfNodes()
+                  << std::endl;
+                  
+    Cluster cluster(parser.getNumberOfNodes());
+
+    Loader loader(cluster, parser.getSchemaConfig());
+
+    parser.getSchemaConfig().printSchema();
+
+
 
     /*std::cout << "========== Direct Record Loading ==========\n";
 
