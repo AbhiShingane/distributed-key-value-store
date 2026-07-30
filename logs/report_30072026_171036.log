@@ -1,0 +1,21 @@
+==========================================================
+Distributed Key Value Store
+Started : Thu Jul 30 17:10:36 IST 2026
+Project : //home/abhilash/project/distributed-key-value-store
+Log File: //home/abhilash/project/distributed-key-value-store/logs/report_30072026_171036.log
+==========================================================
+
+Running CMake...
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: //home/abhilash/project/distributed-key-value-store/build
+
+Building...
+[ 84%] Built target kvstore
+[100%] Built target kvstore_app
+
+Running with files:
+
+
+Usage:
+./kvstore_app <csv-file1> <csv-file2> ...

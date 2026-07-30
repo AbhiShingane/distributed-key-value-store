@@ -1,0 +1,168 @@
+===============================================
+Distributed Key Value Store
+Started : Thu Jul 30 17:06:33 IST 2026
+===============================================
+
+Running CMake...
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: //home/abhilash/project/distributed-key-value-store/build
+
+Building...
+[ 84%] Built target kvstore
+[100%] Built target kvstore_app
+
+Executing kvstore_app...
+
+Error: Could not open file data5.csv
+
+========== Processing Network ==========
+
+==================================================
+              Network Statistics
+==================================================
+Packets Sent      : 0
+Packets Received  : 0
+Packets Pending   : 0
+Active Queues     : 0
+Network Status    : HEALTHY
+==================================================
+
+==================================================
+              Ownership Report
+==================================================
+
+Node 0
+--------------------------
+Owned Records : 0
+
+
+Node 1
+--------------------------
+Owned Records : 0
+
+
+Node 2
+--------------------------
+Owned Records : 0
+
+
+Node 3
+--------------------------
+Owned Records : 0
+
+
+Node 4
+--------------------------
+Owned Records : 0
+
+
+Node 5
+--------------------------
+Owned Records : 0
+
+
+Node 6
+--------------------------
+Owned Records : 0
+
+
+Node 7
+--------------------------
+Owned Records : 0
+
+
+==================================================
+          Ownership Verification
+==================================================
+
+Verification Result : PASS
+
+==================================================
+              Load Distribution
+==================================================
+Total Records      : 0
+Total Nodes        : 8
+Ideal / Node       : 0.00
+
+Node      Records     Ideal       Difference
+-----------------------------------------------
+0         0           0.00        +0.00
+1         0           0.00        +0.00
+2         0           0.00        +0.00
+3         0           0.00        +0.00
+4         0           0.00        +0.00
+5         0           0.00        +0.00
+6         0           0.00        +0.00
+7         0           0.00        +0.00
+
+-----------------------------------------------
+Minimum Records      : 0
+Maximum Records      : 0
+Record Difference    : 0
+Max Difference       : 0.00 records
+Average Difference   : 0.00 records
+Overall Imbalance    : 0.00%
+Allowed Difference   : ±0.00 records
+
+Cluster Status       : BALANCED
+==================================================
+
+========== Cluster Statistics ==========
+Node ID: 0
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+Node ID: 1
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+Node ID: 2
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+Node ID: 3
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+Node ID: 4
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+Node ID: 5
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+Node ID: 6
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+Node ID: 7
+Records: 0
+Puts: 0
+Gets: 0
+Deletes: 0
+-----------------------------
+
+========================================
+Total Nodes   : 8
+Total Records : 0
+========================================
+
+===============================================
+Finished : Thu Jul 30 17:06:33 IST 2026
+===============================================
