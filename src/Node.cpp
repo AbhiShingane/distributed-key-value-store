@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Node.h"
+#include <vector>
 
 
 Node::Node(int id) : nodeId(id) {}
@@ -49,4 +50,15 @@ void Node::PrintStatistics() const {
     std::cout << "Gets: " << stats.getGets() << std::endl;
     std::cout << "Deletes: " << stats.getDeletes() << std::endl;
     std::cout << "-----------------------------" << std::endl;
+}
+
+
+std::vector<std::string> Node::getStoredKeys() const
+{
+    return kvStore.getAllKeys();
+}
+
+std::vector<Record> Node::getAllRecords() const
+{
+    return kvStore.getAllRecords();
 }

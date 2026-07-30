@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <stdexcept>
+#include <vector>
 
 #include "kvstore.h"
 #include "Record.h"
@@ -24,6 +25,9 @@ public:
     bool del(const std::string& key) override;
     bool exists(const std::string& key) const override;
     size_t size() const override;
+
+    std::vector<std::string> getAllKeys() const;
+    std::vector<Record> getAllRecords() const;
 
 private:
     std::unordered_map<std::string, Record> store_;

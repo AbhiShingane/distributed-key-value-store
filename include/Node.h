@@ -36,5 +36,9 @@ class Node
         int id() const;
 
         void PrintStatistics() const;
+
+        std::vector<std::string> getStoredKeys() const;
+
+        std::vector<Record> getAllRecords() const;
 };
 

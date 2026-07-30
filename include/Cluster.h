@@ -49,7 +49,7 @@ class Cluster
 
          //Reporting functions
 
-         void printStatistics() const;
+         //void printStatistics() const;
 
          void printOwnershipReport() const;
 

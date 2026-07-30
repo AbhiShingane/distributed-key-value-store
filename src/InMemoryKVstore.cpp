@@ -11,9 +11,9 @@ bool InMemoryKVStore::set(const Record& record) {
             std::cout<<"record already available: "<<record.getKey()<<std::endl;
             return true;
         }
-        
+
         store_[record.getKey()] = record;
-        std::cout<<"record added: "<<record.getKey()<<std::endl;
+        //std::cout<<"record added: "<<record.getKey()<<std::endl;
         success = true;
     } catch (const std::bad_alloc&) {
         success = false;
@@ -62,4 +62,37 @@ bool InMemoryKVStore::exists(const std::string& key) const {
 size_t InMemoryKVStore::size() const {
     std::shared_lock<std::shared_mutex> lock(mutex_);
     return store_.size();
+}
+
+std::vector<std::string> InMemoryKVStore::getAllKeys() const
+{
+    std::shared_lock lock(mutex_);
+
+    std::vector<std::string> keys;
+
+    keys.reserve(store_.size());
+
+    for(const auto& entry: store_)
+    {
+        keys.push_back(entry.first);
+    }
+
+    return keys;
+}
+
+std::vector<Record> InMemoryKVStore::getAllRecords() const
+{
+    std::shared_lock lock(mutex_);
+
+    std::vector<Record> records;
+
+    records.reserve(store_.size());
+
+    for(const auto& entry: store_)
+    {
+        records.push_back(entry.second);
+    }
+
+
+    return records;
 }

@@ -6,10 +6,11 @@
 
 #include "ConfigParser.h"
 #include "SchemaConfig.h"
+#include "NetworkMock.h"
 
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
     //----------------------------------------------------------
     // Parse Configuration
     //----------------------------------------------------------
@@ -40,15 +41,22 @@ int main() {
             *cluster,
             configParser.getSchemaConfig());
     
-    std::cout << "\n========== Load From Multiple Files ==========\n";
 
-    std::vector<std::string> files =
+    std::vector<std::string> files;
+    //reading the filenames through command line        
+    if (argc < 2)
     {
-        "../data/node1.csv",
-        "../data/node2.csv",
-        "../data/node3.csv",
-        "../data/node4.csv"
-    };
+        std::cerr << "Usage:\n";
+        std::cerr << "./kvstore_app <csv-file1> <csv-file2> ...\n";
+        return 1;
+    }
+
+    for (int i = 1; i < argc; ++i)
+    {
+        files.emplace_back(argv[i]);
+    }
+
+    std::cout << "\n========== Load From Multiple Files ==========\n";
 
     if(loader.loadFromFile(files))
     {
@@ -65,11 +73,15 @@ int main() {
 
     cluster->processNetwork();
 
-    //--------------------------------------------------------
-    // Print Cluster Statistics
-    //--------------------------------------------------------
-    std::cout<< "\n========== Cluster Statistics ==========\n";
+    NetworkMock::printStatistics();
+
+    cluster->printOwnershipReport();
+
+    cluster->verifyOwnership();
+
+    cluster->printLoadDistribution();
 
     cluster->printStatistics();
+    
     return 0;
 }

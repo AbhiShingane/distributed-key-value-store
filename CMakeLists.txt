@@ -18,6 +18,7 @@ add_library(kvstore STATIC
             src/ConfigParser.cpp
             src/Serializer.cpp
             src/NetworkMock.cpp
+            include/Logger.h
 )
 
 target_include_directories(kvstore PUBLIC include)

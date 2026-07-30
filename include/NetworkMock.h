@@ -12,6 +12,9 @@ class NetworkMock
     static std::unordered_map<int, std::queue<std::vector<uint8_t>>> networkQueues;
     static std::mutex networkMutex;
 
+    static size_t packetsSent;
+    static size_t packetsReceived;
+
     public:
     NetworkMock() = delete;
     ~NetworkMock() = delete;
@@ -30,4 +33,6 @@ class NetworkMock
     static size_t pendingPackets(int nodeId);
 
     static void clear();
+
+    static void printStatistics();
 };

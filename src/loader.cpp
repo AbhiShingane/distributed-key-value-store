@@ -160,14 +160,6 @@ Record Loader::parseRecord(const std::string& line)
 
         }
 
-        if(valid)
-        {
-            std::cout
-            << "Result = "
-            << valid
-            << '\n';
-        }
-
         // Skip key because it is already stored
         if (i != 0)
         {

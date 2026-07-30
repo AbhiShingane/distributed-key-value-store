@@ -3,21 +3,33 @@
 set -e
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
 BUILD_DIR="${PROJECT_ROOT}/build"
+DATA_DIR="${PROJECT_ROOT}/data"
 
-EXECUTABLE="${BUILD_DIR}/kvstore_app"
-
-if [ ! -f "${EXECUTABLE}" ]; then
-    echo "Executable not found."
-    echo "Please run build.sh first."
-    exit 1
-fi
+mkdir -p "${BUILD_DIR}"
 
 cd "${BUILD_DIR}"
 
-echo "========================================="
-echo "Running Distributed KV Store"
-echo "========================================="
+cmake -G "Unix Makefiles" ..
 
-./kvstore_app
+make -j
+
+if [ "$1" == "--debug" ]
+then
+    export KVSTORE_DEBUG=1
+    shift
+fi
+
+FILES=""
+
+for file in "$@"
+do
+    FILES="${FILES} ${DATA_DIR}/${file}"
+done
+
+echo
+echo "Running with files:"
+echo "${FILES}"
+echo
+
+./kvstore_app ${FILES}

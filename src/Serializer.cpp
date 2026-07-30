@@ -62,7 +62,9 @@ Record Serializer::deserialize(const std::vector<uint8_t>& buffer)
     }
     catch(const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        throw std::runtime_error(
+        "Failed to deserialize packet: " +
+        std::string(e.what()));
     }
     
 }
