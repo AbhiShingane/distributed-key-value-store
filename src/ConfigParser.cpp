@@ -1,5 +1,6 @@
 #include<iostream>
 #include "ConfigParser.h"
+#include "Logger.h"
 
 #include<fstream>
 #include<sstream>
@@ -108,15 +109,20 @@ void ConfigParser::parseField(const std::string& line)
         fname = trim(fname);
         ftype = trim(ftype);
         
-        /*std::cout << "Definition: [" << def << "]\n";
-        std::cout << "Field Name: [" << fname << "]\n";
-        std::cout << "Field Type: [" << ftype << "]\n";
-        std::cout << "Length: " << ftype.length() << std::endl;*/
+        if(Logger::isDebugEnabled()){
+            std::cout << "Definition: [" << def << "]\n";
+            std::cout << "Field Name: [" << fname << "]\n";
+            std::cout << "Field Type: [" << ftype << "]\n";
+            std::cout << "Length: " << ftype.length() << std::endl;
+        }
 
         DataType type = DataTypeUtils::fromString(ftype);
         
 
-        std::cout<<"fname: "<<fname<<" ftype: "<<ftype<<std::endl; 
+        Logger::debug(
+            "ConfigParser::parseField(): fieldname:"
+            + fname + " fieldtype: " + ftype); 
+        
         if(!schemaconfig.addField(fname, type))
         {
             throw std::runtime_error(

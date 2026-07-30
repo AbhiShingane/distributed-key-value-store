@@ -3,6 +3,7 @@
 #include "InMemoryKVstore.h"
 #include "loader.h"
 #include "Cluster.h"
+#include "Logger.h"
 
 #include "ConfigParser.h"
 #include "SchemaConfig.h"
@@ -18,13 +19,19 @@ int main(int argc, char* argv[]) {
 
         configParser.parse("../config.txt");
 
-        std::cout << "\n========== Configuration ==========\n";
+        if(Logger::isDebugEnabled()){
+            std::cout << "\n========== Configuration ==========\n";
 
-        std::cout << "Nodes : "
-                  << configParser.getNumberOfNodes()
-                  << std::endl;
+        
+            std::cout << "Nodes : "
+                    << configParser.getNumberOfNodes()
+                    << std::endl;
+        }
 
-        configParser.getSchemaConfig().printSchema();
+        if(Logger::isDebugEnabled())
+        {
+            configParser.getSchemaConfig().printSchema();
+        }
 
     //----------------------------------------------------------
     // Create Cluster
@@ -56,17 +63,21 @@ int main(int argc, char* argv[]) {
         files.emplace_back(argv[i]);
     }
 
-    std::cout << "\n========== Load From Multiple Files ==========\n";
+    //std::cout << "\n========== Load From Multiple Files ==========\n";
 
     if(loader.loadFromFile(files))
     {
+        if(Logger::isDebugEnabled()){
         std::cout
             << "All records loaded successfully.\n";
+        }
     }
     else
     {
+        if(Logger::isDebugEnabled()){
         std::cout
             << "Some records failed to load.\n";
+        }
     }
 
     std::cout<< "\n========== Processing Network ==========\n";

@@ -1,4 +1,5 @@
 ﻿#include "InMemoryKVstore.h"
+#include "Logger.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -8,12 +9,17 @@ bool InMemoryKVStore::set(const Record& record) {
     try {
         if(store_.find(record.getKey()) != store_.end())
         {
-            std::cout<<"record already available: "<<record.getKey()<<std::endl;
+            Logger::debug(
+                record.getKey() +
+                " : record is already available");
+
             return true;
         }
 
         store_[record.getKey()] = record;
-        //std::cout<<"record added: "<<record.getKey()<<std::endl;
+        Logger::debug(
+                record.getKey() +
+                " : record added");
         success = true;
     } catch (const std::bad_alloc&) {
         success = false;

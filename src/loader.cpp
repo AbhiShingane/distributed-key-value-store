@@ -2,6 +2,7 @@
 #include"loader.h"
 #include"Cluster.h"
 #include "Datatype.h"
+#include "Logger.h"
 
 #include<fstream>
 #include<iostream>
@@ -17,7 +18,8 @@ Loader::Loader(Cluster& cluster, const SchemaConfig& schconfig) : clusterobj(clu
 bool Loader::load(const Record& record) {
 
     clusterobj.put(record);
-    //std::cout<<"In load function: "<<record.getKey()<<"  is added."<<std::endl;
+    
+    Logger::debug(record.getKey() +"Record Added");
     return true;
 }
 
