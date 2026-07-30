@@ -6,6 +6,12 @@ bool InMemoryKVStore::set(const Record& record) {
     bool success = false;
     std::unique_lock<std::shared_mutex> lock(mutex_);
     try {
+        if(store_.find(record.getKey()) != store_.end())
+        {
+            std::cout<<"record already available: "<<record.getKey()<<std::endl;
+            return true;
+        }
+        
         store_[record.getKey()] = record;
         std::cout<<"record added: "<<record.getKey()<<std::endl;
         success = true;

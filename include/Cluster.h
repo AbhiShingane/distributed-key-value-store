@@ -47,4 +47,13 @@ class Cluster
 
          void printStatistics() const;
 
+         //Reporting functions
+
+         void printStatistics() const;
+
+         void printOwnershipReport() const;
+
+         void verifyOwnership() const;
+
+         void printLoadDistribution() const;
 };
