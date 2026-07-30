@@ -1,341 +1,315 @@
-# Distributed In-Memory Key-Value Store
+# Distributed Key-Value Store
 
-A distributed, thread-safe in-memory key-value storage system implemented in **Modern C++17**. The project simulates a distributed cluster where each record is owned by a single node using hash-based partitioning. It supports concurrent access, bulk loading from CSV files, and per-node statistics collection.
+> A configurable, schema-aware distributed key-value store implemented in modern C++.
 
----
+## Overview
 
-## Features
+This project simulates a distributed key-value store with:
+- Configurable cluster size
+- Schema-driven record validation
+- Consistent hash-based partitioning
+- Mock network transport
+- Record serialization/deserialization
+- Thread-safe in-memory storage
+- Cluster statistics and ownership verification
+- Google Test unit tests
+- Build/run automation scripts
+- Automatic log generation
 
-- Thread-safe in-memory key-value store
-- Distributed cluster with multiple logical nodes
-- Hash-based partitioning for even record distribution
-- Bulk loading from one or multiple CSV files
-- Per-node operation statistics
-- Modular and extensible architecture
-- Modern C++17 implementation
-- CMake build system
+## High-Level Architecture
 
----
-
-## Architecture
-
+```text
+               +----------------+
+               |   config.txt   |
+               +-------+--------+
+                       |
+                ConfigParser
+                       |
+                SchemaConfig
+                       |
+                 +-----v------+
+CSV Files -----> |   Loader   |
+                 +-----+------+
+                       |
+                    Record
+                       |
+                 +-----v------+
+                 |  Cluster   |
+                 +-----+------+
+                       |
+                Partitioner
+                       |
+             +---------+---------+
+             |                   |
+        NetworkMock         Serializer
+             |                   |
+      +------+------+------------+
+      |      |      |      |
+    Node0  Node1  Node2  NodeN
+      |      |      |      |
+      +------+------+------+
+             |
+      InMemoryKVStore
 ```
-                          +------------------+
-                          |      Loader      |
-                          +------------------+
-                                   |
-                     Read Records / CSV Files
-                                   |
-                                   ▼
-                          +------------------+
-                          |     Cluster      |
-                          +------------------+
-                                   |
-                          Hash-based Routing
-                                   |
-                    +--------------+--------------+
-                    |              |              |
-                    ▼              ▼              ▼
-              +---------+    +---------+    +---------+
-              | Node 0  |    | Node 1  |    | Node N  |
-              +---------+    +---------+    +---------+
-                    |              |              |
-                    ▼              ▼              ▼
-          +----------------+ +----------------+ +----------------+
-          | InMemoryKVStore| | InMemoryKVStore| | InMemoryKVStore|
-          +----------------+ +----------------+ +----------------+
-                    |
-                    ▼
-           Thread-safe Hash Map
-```
-
----
 
 ## Data Flow
 
-```
-                 Record (Key, Value)
-                        |
-                        ▼
-                   Partitioner
-                        |
-           hash(key) % totalNodes
-                        |
-                        ▼
-                 Owner Node Selected
-                        |
-                        ▼
-               InMemoryKVStore
+```text
+CSV
+ │
+ ▼
+Loader
+ │
+ ▼
+Schema Validation
+ │
+ ▼
+Record
+ │
+ ▼
+Partitioner
+ │
+ ▼
+NetworkMock
+ │
+ ▼
+Serializer
+ │
+ ▼
+Destination Node
+ │
+ ▼
+InMemoryKVStore
 ```
 
----
+## Repository Structure
 
-## Project Structure
-
-```
+```text
 distributed-key-value-store/
-│
-├── CMakeLists.txt
-├── README.md
-├── data/
-│   ├── node1.csv
-│   ├── node2.csv
-│   └── node3.csv
-│
-├── include/
-│   ├── Cluster.h
-│   ├── InMemoryKVStore.h
-│   ├── KVStore.h
-│   ├── Loader.h
-│   ├── Node.h
-│   ├── Partitioner.h
-│   ├── Record.h
-│   └── Statistics.h
-│
 ├── src/
-│   ├── Cluster.cpp
-│   ├── InMemoryKVStore.cpp
-│   ├── Loader.cpp
-│   ├── Node.cpp
-│   ├── Partitioner.cpp
-│   ├── Record.cpp
-│   └── Statistics.cpp
-│
-└── test/
-    └── main.cpp
+├── include/
+├── test/
+├── data/
+├── scripts/
+├── build/
+├── logs/
+├── CMakeLists.txt
+├── config.txt
+└── README.md
 ```
 
----
+### Folder Purpose
 
-## Components
+| Folder | Description |
+|--------|-------------|
+| src | Source implementation |
+| include | Header files |
+| test | Google Test unit tests |
+| data | CSV input files |
+| scripts | build.sh, run.sh, tests.sh, generate_data.sh |
+| build | CMake build output |
+| logs | Timestamped execution logs |
 
-### InMemoryKVStore
+## Major Components
 
-Thread-safe key-value storage implementation.
-
-Supports:
-
-- set()
-- get()
-- delete()
-- exists()
-- size()
-
-Synchronization is implemented using `std::shared_mutex`.
-
----
-
-### Record
-
-Represents a key-value record.
-
-```cpp
-Record(key, value)
-```
-
----
-
-### Partitioner
-
-Determines the owner node for each record.
-
-Current partitioning strategy:
-
-```
-ownerNode = hash(key) % numberOfNodes
-```
-
-This ensures a near-even distribution of records.
-
----
-
-### Node
-
-Represents one logical storage node.
-
-Responsibilities:
-
-- Owns one InMemoryKVStore
-- Performs CRUD operations
-- Maintains operation statistics
-
----
-
-### Statistics
-
-Tracks per-node operations.
-
-Metrics collected:
-
-- Number of PUT operations
-- Number of GET operations
-- Number of DELETE operations
-
-Implemented using atomic counters.
-
----
-
-### Cluster
-
-The central coordinator of the distributed system.
-
-Responsibilities:
-
-- Creates all nodes
-- Routes requests to owner node
-- Uses Partitioner
-- Aggregates cluster statistics
+### ConfigParser
+Reads configuration from `config.txt`.
 
 Example:
 
-```
-PUT(key,value)
-
-      │
-      ▼
-
- Cluster
-
-      │
-
-Partitioner
-
-      │
-
-Owner Node
-
-      │
-
-KV Store
+```text
+nodes=4
+field=id,string
+field=age,int32
+field=score,int32
 ```
 
----
+### SchemaConfig
+Stores ordered schema and validates incoming records.
 
 ### Loader
+Loads CSV files, validates rows, creates `Record` objects and sends them to the cluster.
 
-Loads records into the cluster.
+### Record
+Represents a row:
+- Primary key
+- Field values
 
-Supports:
+### Partitioner
+Maps record keys to owner nodes using:
 
-- Loading individual records
-- Loading from a CSV file
-- Loading from multiple CSV files
-
-Example CSV:
-
-```
-apple,fruit
-car,vehicle
-linux,operating system
+```cpp
+std::hash<std::string>{}(key) % totalNodes;
 ```
 
----
+### Cluster
+Responsible for:
+- put/get/delete
+- ownership verification
+- network processing
+- load distribution
+- statistics
 
-## Thread Safety
+### NetworkMock
+Simulates network communication using queues.
 
-The storage layer is thread-safe.
+### Serializer
+Converts `Record` ↔ byte stream.
 
-Synchronization uses:
+### Node
+Owns:
+- InMemoryKVStore
+- Statistics
 
-- std::shared_mutex
-- std::shared_lock
-- std::unique_lock
+### InMemoryKVStore
+Thread-safe storage using `std::shared_mutex`.
 
-Multiple readers can access the store simultaneously while writes remain exclusive.
+## Building
 
----
-
-## Build Instructions
-
-### Clone
-
-```bash
-git clone https://github.com/AbhiShingane/distributed-key-value-store.git
-cd distributed-key-value-store
-```
-
-### Configure
-
-```bash
-mkdir build
-cd build
-
-cmake ..
-```
-
-### Build
-
-```bash
-make
-```
-
-### Run
-
-```bash
-./kvstore_app
-```
-
----
-
-## Sample Output
-
-```
-========== Direct Record Loading ==========
-
-Apple -> Fruit
-Dog -> Animal
-Linux -> Operating System
-
-========== Contains ==========
-Contains Apple : Yes
-Contains Tiger : No
-
-========== Delete ==========
-Contains Dog : No
-
-========== Cluster Statistics ==========
-
-Node 0
-Records : 4
-Puts    : 6
-Gets    : 3
-Deletes : 1
-
-Node 1
-Records : 3
-Puts    : 5
-Gets    : 2
-Deletes : 0
-
-Total Records : 7
-```
-
----
-
-## Design Decisions
-
-- Separation of concerns
-- Thread-safe storage
-- Smart pointer ownership
-- Modular architecture
-- Hash-based routing
-- Easy to extend with real networking
-
----
-
-
-## Technologies Used
+Requirements
 
 - C++17
-- STL
-- std::unordered_map
-- std::shared_mutex
-- std::optional
-- std::atomic
-- Smart Pointers
 - CMake
+- GNU Make
 
----
-## License
+```bash
+cd scripts
+./build.sh
+```
 
-This project is intended for educational and interview preparation purposes.
+## Running
+
+```bash
+./run.sh node1.csv node2.csv
+```
+
+Debug mode
+
+```bash
+./run.sh --debug node1.csv
+```
+
+## Logging
+
+Every run creates
+
+```text
+logs/report_ddmmyyyy_hhmmss.log
+```
+
+All console output is redirected into the report.
+
+## Data Generation
+
+Generate CSV data:
+
+```bash
+./generate_data.sh
+```
+
+The script asks:
+- Number of files
+- File name
+- Number of records
+- Generate duplicate records (Y/N)
+
+Generated files are placed in:
+
+```text
+data/
+```
+
+## Testing
+
+Google Test is integrated.
+
+Run:
+
+```bash
+./tests.sh
+```
+
+Current test suites:
+
+- test_node.cpp
+- test_cluster.cpp
+- test_loader.cpp
+- test_kvstore.cpp
+
+Coverage includes:
+- CRUD
+- Ownership
+- Loader validation
+- Network processing
+- Serialization
+- Statistics
+
+## Load Distribution
+
+Cluster reports:
+- Total records
+- Records/node
+- Ideal load
+- Min/Max
+- Deviation
+- Balance status
+
+## Ownership Verification
+
+Verifies every key belongs to the correct node according to the partitioner.
+
+## Network Statistics
+
+Reports:
+- Packets sent
+- Packets received
+- Pending packets
+- Active queues
+
+## Scalability
+
+Current implementation scales by:
+- Increasing node count in config
+- Adding CSV files
+- Hash-based partitioning
+- Thread-safe storage
+
+Future improvements:
+- Replication
+- Consistent hashing ring
+- Virtual nodes
+- Persistent storage
+- TCP/gRPC networking
+- Raft consensus
+- Replication factor
+- Rebalancing after node joins/leaves
+- Compression
+- Bloom filters
+- WAL
+- Snapshotting
+
+## Example Execution
+
+```text
+./run.sh node1.csv node2.csv node3.csv node4.csv
+
+Configuration Loaded
+Records Loaded
+Network Processing
+Ownership Verification
+Load Distribution
+Cluster Statistics
+Network Statistics
+```
+
+## Design Highlights
+
+- Modern C++17
+- RAII
+- Smart pointers
+- Thread-safe containers
+- Modular architecture
+- Separation of concerns
+- Schema-driven validation
+- Mock distributed networking
+
