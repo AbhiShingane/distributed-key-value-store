@@ -29,3 +29,7 @@ add_executable(kvstore_app
 
 target_link_libraries(kvstore_app PRIVATE kvstore)
 target_include_directories(kvstore_app PRIVATE include)
+
+enable_testing()
+
+add_subdirectory(tests)
