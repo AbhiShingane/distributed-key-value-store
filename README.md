@@ -313,3 +313,102 @@ Network Statistics
 - Schema-driven validation
 - Mock distributed networking
 
+
+
+---
+
+# Example Execution Output
+
+The following is a sample execution of the application using four CSV files.
+
+```text
+Running with files:
+/home/abhilash/project/distributed-key-value-store/data/data1.csv
+/home/abhilash/project/distributed-key-value-store/data/data2.csv
+/home/abhilash/project/distributed-key-value-store/data/data3.csv
+/home/abhilash/project/distributed-key-value-store/data/data4.csv
+
+========== Processing Network ==========
+
+Network Statistics
+------------------
+Packets Sent      : 40
+Packets Received  : 40
+Packets Pending   : 0
+Active Queues     : 8
+Network Status    : HEALTHY
+
+Ownership Report
+----------------
+Node 0 : 6 records
+Node 1 : 4 records
+Node 2 : 5 records
+Node 3 : 4 records
+Node 4 : 10 records
+Node 5 : 6 records
+Node 6 : 2 records
+Node 7 : 3 records
+
+Ownership Verification
+----------------------
+All records successfully verified.
+Verification Result : PASS
+
+Load Distribution
+-----------------
+Total Records      : 40
+Total Nodes        : 8
+Ideal / Node       : 5.00
+
+Node      Records     Ideal       Difference
+-----------------------------------------------
+0         6           5.00        +1.00
+1         4           5.00        -1.00
+2         5           5.00        +0.00
+3         4           5.00        -1.00
+4         10          5.00        +5.00
+5         6           5.00        +1.00
+6         2           5.00        -3.00
+7         3           5.00        -2.00
+
+Minimum Records      : 2
+Maximum Records      : 10
+Record Difference    : 8
+Max Difference       : 5.00 records
+Average Difference   : 1.75 records
+Overall Imbalance    : 35.00%
+Allowed Difference   : ±9.00 records
+
+Cluster Status       : BALANCED
+
+Cluster Statistics
+------------------
+Node 0 : Records=6  Puts=6
+Node 1 : Records=4  Puts=4
+Node 2 : Records=5  Puts=5
+Node 3 : Records=4  Puts=4
+Node 4 : Records=10 Puts=10
+Node 5 : Records=6  Puts=6
+Node 6 : Records=2  Puts=2
+Node 7 : Records=3  Puts=3
+
+Total Nodes   : 8
+Total Records : 40
+```
+
+## Understanding the Output
+
+| Section | Purpose |
+|---------|---------|
+| Processing Network | Delivers serialized records to destination nodes. |
+| Network Statistics | Displays packets sent, received, pending packets and queue health. |
+| Ownership Report | Lists all records stored on each node. |
+| Ownership Verification | Confirms every record resides on its correct owner node. |
+| Load Distribution | Shows how evenly records are distributed across the cluster. |
+| Cluster Statistics | Reports per-node CRUD statistics and total record counts. |
+
+This sample demonstrates a healthy cluster where:
+- All packets are successfully delivered.
+- Ownership verification passes.
+- No packets remain pending.
+- The cluster is considered balanced according to the configured load-balancing policy.
